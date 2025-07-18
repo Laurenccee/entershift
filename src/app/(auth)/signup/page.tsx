@@ -7,19 +7,19 @@ import {
   CardContent,
   CardFooter,
 } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { ArrowRight, Mail, RectangleEllipsis } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Mail, RectangleEllipsis, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
-function LoginPage() {
+function SignupPage() {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <Card className="w-full max-w-sm flex border-none flex-col gap-5">
         <CardHeader>
           <CardTitle>
-            <Title>Sign In.</Title>
+            <Title>Sign Up.</Title>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -32,30 +32,21 @@ function LoginPage() {
                 leftIcon={<RectangleEllipsis />}
               />
             </div>
-            <div className="flex px-1 items-center justify-between">
-              <Checkbox label="Remember me" />
-              <Link
-                className="text-sm font-bold uppercase hover:underline text-primary"
-                href="/forgot-password"
-              >
-                Forgot password?
-              </Link>
-            </div>
             <Button type="submit" className="w-full flex gap-5">
-              ACCESS ACCOUNT
+              REGISTER
               <ArrowRight />
             </Button>
           </form>
         </CardContent>
         <CardFooter className="justify-between items-center">
           <span className=" text-md uppercase font-bold">
-            Don't have an account?{' '}
+            Already have an account?
           </span>
           <Link
-            className="text-sm uppercase flex justify-center items-center border-2 bg-primary px-2 py-0 font-bold hover:underline text-black"
-            href="/signup"
+            className="text-sm uppercase border-2 bg-primary px-2 py-0 font-bold hover:underline text-black"
+            href="/login"
           >
-            Register
+            Login
           </Link>
         </CardFooter>
       </Card>
@@ -71,4 +62,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default SignupPage;

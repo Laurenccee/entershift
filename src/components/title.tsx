@@ -9,7 +9,7 @@ export default function Title({ className, children }: TitleProps) {
   return (
     <>
       <h1
-        className={`text-2xl uppercase underline px-2 bg-primary font-bold ${className}`}
+        className={`text-4xl  underline px-2 bg-primary font-semibold ${className}`}
       >
         {children}
       </h1>
