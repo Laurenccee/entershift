@@ -1,3 +1,5 @@
+'use client';
+
 import Title from '@/components/title';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,27 +11,81 @@ import {
 } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { ArrowRight, Mail, RectangleEllipsis } from 'lucide-react';
+import { auth } from '@/lib/firebase/firebase';
+import { ArrowRight, Loader, Mail, RectangleEllipsis } from 'lucide-react';
 import Link from 'next/link';
-import React from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
-function LoginPage() {
+import { signInWithEmailAndPassword } from 'firebase/auth';
+
+const loginSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+});
+
+export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
+
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    if (searchParams.get('signup') === 'success') {
+      toast.success('Account Created', {
+        description: 'Please log in to continue.',
+      });
+    }
+  }, [searchParams]);
+
+  const handleLogin = async () => {
+    const validation = loginSchema.safeParse({ email, password });
+    if (!validation.success) {
+      const firstError = validation.error.issues[0].message;
+      toast.error('Validation Error', {
+        description: firstError,
+      });
+      return;
+    }
+    setIsLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log('Login successful:', email);
+      router.push('/dashboard');
+    } catch (error: any) {
+      toast.error('Login failed', { description: error.message });
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <Card className="w-full max-w-sm flex border-none flex-col gap-5">
+      <Card className="w-full max-w-sm bg-transparent border-0 sm:border-2 sm:bg-card flex flex-col gap-5">
         <CardHeader>
           <CardTitle>
             <Title>Sign In.</Title>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form className="flex flex-col gap-5">
+          <form className="flex flex-col gap-5" onSubmit={handleLogin}>
             <div className="flex flex-col gap-2.5">
-              <Input placeholder="Email" leftIcon={<Mail />} />
+              <Input
+                placeholder="Email"
+                leftIcon={<Mail />}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
+              />
               <Input
                 placeholder="Password"
                 type="password"
                 leftIcon={<RectangleEllipsis />}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div className="flex px-1 items-center justify-between">
@@ -41,14 +97,18 @@ function LoginPage() {
                 Forgot password?
               </Link>
             </div>
-            <Button type="submit" className="w-full flex gap-5">
-              ACCESS ACCOUNT
-              <ArrowRight />
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full flex gap-5"
+            >
+              {isLoading ? 'LOGGING IN...' : 'ACCESS ACCOUNT'}
+              {isLoading ? <Loader className="animate-spin" /> : <ArrowRight />}
             </Button>
           </form>
         </CardContent>
         <CardFooter className="justify-between items-center">
-          <span className=" text-md uppercase font-bold">
+          <span className="text-md uppercase font-bold">
             Don't have an account?{' '}
           </span>
           <Link
@@ -70,5 +130,3 @@ function LoginPage() {
     </div>
   );
 }
-
-export default LoginPage;

@@ -40,14 +40,15 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --shadow: var(--shadow);
 }
 
 :root {
   --radius: 0.65rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.141 0.005 285.823);
+  --card: oklch(0.95 0.01 90);
+  --card-foreground: oklch(0.2 0.03 90);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
   --primary: oklch(0.723 0.219 149.579);
@@ -75,13 +76,14 @@
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.723 0.219 149.579);
+  --shadow: 0 4px 0 rgba(0, 0, 0, 1);
 }
 
 .dark {
   --background: oklch(0.141 0.005 285.823);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.985 0 0);
+  --card: oklch(0.15 0.02 90);
+  --card-foreground: oklch(0.98 0.01 90);
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.696 0.17 162.48);
@@ -109,6 +111,7 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.527 0.154 150.069);
+  --shadow: 0 4px 0 rgba(255, 255, 255, 0.3);
 }
 
 @layer base {
@@ -125,6 +128,9 @@
   .autofill-parent:has(input:-webkit-autofill) {
     @apply bg-emerald-50 dark:bg-emerald-900;
   }
+  .shadow-shadow {
+    box-shadow: var(--shadow);
+  }
 }
 
 input:-webkit-autofill {
@@ -134,4 +140,8 @@ input:-webkit-autofill {
 /* Autofill style for dark theme */
 .dark input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 1000px #ecfdf5 inset !important;
+}
+
+.toaster [data-description] {
+  color: var(--description-text);
 }

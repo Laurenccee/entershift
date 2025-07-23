@@ -7,15 +7,25 @@ import React from 'react';
 interface InputProps extends React.ComponentProps<'input'> {
   type?: string;
   leftIcon?: React.ReactNode;
+  onLeftIconClick?: () => void;
   rightIcon?: React.ReactNode;
+  onRightIconClick?: () => void;
   className?: string;
 }
 
-function Input({ className, leftIcon, rightIcon, type, ...props }: InputProps) {
-  const [isPassword, setIsPassword] = React.useState(false);
+function Input({
+  className,
+  leftIcon,
+  onLeftIconClick,
+  rightIcon,
+  onRightIconClick,
+  type,
+  ...props
+}: InputProps) {
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const togglePasswordVisibility = () => {
-    setIsPassword(!isPassword);
+    setShowPassword((prev) => !prev);
   };
 
   return (
@@ -25,9 +35,20 @@ function Input({ className, leftIcon, rightIcon, type, ...props }: InputProps) {
         className
       )}
     >
-      {leftIcon && <button>{leftIcon}</button>}
+      {leftIcon && (
+        <button
+          type="button"
+          onClick={onLeftIconClick}
+          tabIndex={-1}
+          aria-hidden="true"
+          className="cursor-pointer p-0"
+        >
+          {leftIcon}
+        </button>
+      )}
+
       <input
-        type={type === 'password' && !isPassword ? 'password' : 'text'}
+        type={type === 'password' && !showPassword ? 'password' : 'text'}
         className="input flex-1 h-full min-w-0 border-0 bg-transparent p-0 align-middle text-foreground placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:outline-none disabled:opacity-50"
         {...props}
       />
@@ -35,13 +56,26 @@ function Input({ className, leftIcon, rightIcon, type, ...props }: InputProps) {
       {type === 'password' && (
         <button
           type="button"
-          className="cursor-pointer p-0"
           onClick={togglePasswordVisibility}
+          tabIndex={-1}
+          aria-hidden="true"
+          className="cursor-pointer p-0"
         >
-          {isPassword ? <EyeClosed /> : <Eye />}
+          {showPassword ? <EyeClosed /> : <Eye />}
         </button>
       )}
-      {rightIcon && <button>{rightIcon}</button>}
+
+      {rightIcon && (
+        <button
+          type="button"
+          onClick={onRightIconClick}
+          tabIndex={-1}
+          aria-hidden="true"
+          className="cursor-pointer p-0"
+        >
+          {rightIcon}
+        </button>
+      )}
     </div>
   );
 }

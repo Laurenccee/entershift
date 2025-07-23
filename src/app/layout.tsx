@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Karla } from 'next/font/google';
 import '@/styles/globals.css';
+import { Toaster } from '@/components/ui/sonner';
 
 const karla = Karla({
   subsets: ['latin'],
@@ -19,7 +20,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${karla.variable}`}>
-      <body className={` antialiased`}>{children}</body>
+      <body className={` antialiased`}>
+        {children}
+        <Toaster position="bottom-right" />
+      </body>
     </html>
   );
 }
