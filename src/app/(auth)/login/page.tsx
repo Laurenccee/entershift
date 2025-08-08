@@ -11,7 +11,8 @@ import {
 } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { auth } from '@/lib/firebase/firebase';
+import { auth, db } from '@/lib/firebase/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import { ArrowRight, Loader, Mail, RectangleEllipsis } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -42,22 +43,43 @@ export default function LoginPage() {
     }
   }, [searchParams]);
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     const validation = loginSchema.safeParse({ email, password });
     if (!validation.success) {
       const firstError = validation.error.issues[0].message;
-      toast.error('Validation Error', {
-        description: firstError,
-      });
+      toast.error('Validation Error', { description: firstError });
       return;
     }
+
     setIsLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      console.log('Login successful:', email);
-      router.push('/dashboard');
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      // ✅ Check if email is verified
+      if (!user.emailVerified) {
+        toast.error('Email not verified. Please check your inbox.');
+        router.push('/verification');
+        return;
+      }
+
+      // ✅ Check if Firestore user profile exists
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (!userDoc.exists()) {
+        router.push('/profile/create');
+      } else {
+        router.push('/dashboard');
+      }
     } catch (error: any) {
       toast.error('Login failed', { description: error.message });
+    } finally {
+      setIsLoading(false);
     }
   };
 

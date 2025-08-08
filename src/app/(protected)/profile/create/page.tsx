@@ -23,8 +23,8 @@ import { NumberSelection } from '@/components/num-selection';
 function ProfileSetupPage() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [phone, setPhone] = useState(''); // ✅ Phone number
-  const [countryCode, setCountryCode] = useState('+63'); // ✅ Default country
+  const [phone, setPhone] = useState('');
+  const [countryCode, setCountryCode] = useState('+63');
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [previewURL, setPreviewURL] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -126,8 +126,9 @@ function ProfileSetupPage() {
       await setDoc(doc(db, 'users', user.uid), {
         name: displayName,
         email: user.email,
-        phone: `${countryCode}${phone}`, // ✅ Save full number
+        phone: `${countryCode}${phone}`,
         photoURL,
+        workspaces: {},
         createdAt: serverTimestamp(),
       });
 
@@ -136,7 +137,7 @@ function ProfileSetupPage() {
       );
       console.log('fullname:', displayName);
       console.log('number:', countryCode, phone);
-      router.push('/dashboard');
+      router.push('/workspace/create');
     } catch (err: any) {
       console.error('Profile setup failed:', err);
       toast.error(

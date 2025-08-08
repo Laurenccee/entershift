@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/lib/firebase/firebase';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Loader } from 'lucide-react';
 
 export default function ProtectedLayout({
@@ -14,7 +14,6 @@ export default function ProtectedLayout({
   const [isChecking, setIsChecking] = useState(true);
   const [isAllowed, setIsAllowed] = useState(false);
   const router = useRouter();
-  const pathname = usePathname();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -27,7 +26,7 @@ export default function ProtectedLayout({
     });
 
     return () => unsubscribe();
-  }, [pathname, router]);
+  }, [router]);
 
   if (isChecking) {
     return (
@@ -37,5 +36,5 @@ export default function ProtectedLayout({
     );
   }
 
-  return <>{isAllowed && children}</>;
+  return isAllowed ? <>{children}</> : null;
 }
